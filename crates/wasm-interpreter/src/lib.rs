@@ -365,7 +365,6 @@ impl Frame<'_> {
 
                 // ... otherwise this is a normal call so we recurse.
                 } else {
-                    // Skip profiling related functions which we don't want to interpret.
                     if self
                         .module
                         .funcs
@@ -373,7 +372,19 @@ impl Frame<'_> {
                         .name
                         .as_ref()
                         .is_some_and(|name| {
-                            name.starts_with("__llvm_profile_init")
+                            // Skip the constructor function.
+                            //
+                            // Complex logic can be implemented in the ctor, our simple interpreter will fail
+                            // to execute due to missing instructions.
+                            //
+                            // For example, executing `1 + 1` fails due to the lack of `I32.And` instruction.
+                            //
+                            // Because `wasm-ld` may insert a call to ctor from the beginning of every function that
+                            // your module exports, the interpreter will enter the ctor logic when parsing the
+                            // `wasm-bindgen` function, causing failure.
+                            name.starts_with("__wasm_call_ctors")
+                                // Skip profiling related functions which we don't want to interpret.
+                                || name.starts_with("__llvm_profile_init")
                                 || name.starts_with("__llvm_profile_register_function")
                                 || name.starts_with("__llvm_profile_register_function")
                         })
