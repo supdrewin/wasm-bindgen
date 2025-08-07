@@ -30,11 +30,16 @@
 * Fix incorrect memory loading and storing assertions during post-processing.
   [#4554](https://github.com/wasm-bindgen/wasm-bindgen/pull/4554)
 
+<<<<<<< HEAD
 * Fix test `--exact` option not working as expected.
   [#4549](https://github.com/wasm-bindgen/wasm-bindgen/pull/4549)
 
 * Fix tables being removed even though they are used by stack closures.
   [#4119](https://github.com/wasm-bindgen/wasm-bindgen/pull/4564)
+=======
+* Skip `__wasm_call_ctors` which we don't want to interpret.
+  [#4562](https://github.com/wasm-bindgen/wasm-bindgen/pull/4562)
+>>>>>>> a28024f47b6559c824144de1adc5e5294d1c5ff8
 
 --------------------------------------------------------------------------------
 
