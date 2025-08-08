@@ -307,14 +307,21 @@ impl Frame<'_> {
             // mode where there's some traffic on the linear stack even when in
             // theory there doesn't need to be.
             Instr::Load(e) => {
-                let address = stack.pop().unwrap();
-                let address = address as u32 + e.arg.offset;
+                let address_0 = stack.pop().unwrap();
+                let offset_0 = e.arg.offset;
+                let address = address_0 as u32 + offset_0;
                 ensure!(
                     address > 0,
                     "Read a negative or zero address value from the stack. Did we run out of memory?"
                 );
                 ensure!(address % 4 == 0);
-                stack.push(self.interp.mem[address as usize / 4])
+                match self.interp.mem.get(address as usize / 4) {
+                    Some(&value) => stack.push(value),
+                    None => {
+                        println!("address_0: {address_0}");
+                        println!("offset_0: {offset_0}");
+                    }
+                }
             }
             Instr::Store(e) => {
                 let value = stack.pop().unwrap();
